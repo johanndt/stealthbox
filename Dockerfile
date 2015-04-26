@@ -1,4 +1,5 @@
-FROM phusion/baseimage:0.9.16
+FROM baseimage:utopic
+#FROM phusion/baseimage:0.9.16
 
 MAINTAINER Rémi Alvergnat <toilal.dev@gmail.com>
 
@@ -18,6 +19,7 @@ ENV HOME /root
 RUN rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
 
 # Add custom apt sources
+RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:deluge-team/ppa
 RUN apt-get update -y
 
@@ -88,7 +90,7 @@ RUN sed -ri 's/^[;#]?(listen.group\s*=\s*).*/\1box/' /etc/php5/fpm/pool.d/www.co
 
 #flexget
 RUN mkdir -p /home/box/flexget
-ADD flexget/* /home/box/flexget/
+ADD flexget/ /home/box/flexget/
 
 # pydio
 RUN sed -ri 's/^(define\("AJXP_DATA_PATH",\s*).*(\);)/\1"\/home\/box\/pydio"\2/' /opt/pydio/conf/bootstrap_context.php
@@ -97,16 +99,16 @@ RUN ln -s /home/box/pydio /opt/pydio/data
 
 ADD pydio/bootstrap.json /home/box/pydio/plugins/boot.conf/
 ADD pydio/pydio.db /home/box/pydio/plugins/conf.sql/
-ADD pydio/cache/* /home/box/pydio/cache/
+ADD pydio/cache/ /home/box/pydio/cache/
 
 # SickRage
 RUN mkdir -p /home/box/sickrage
 RUN mkdir -p /home/box/sickrage/data
-ADD sickrage/* /home/box/sickrage/
+ADD sickrage/ /home/box/sickrage/
 
 # CouchPotato
 RUN mkdir -p /home/box/couchpotato
-ADD couchpotato/* /home/box/couchpotato/
+ADD couchpotato/ /home/box/couchpotato/
 
 # 3rd party providers for CouchPotato
 # https://couchpota.to/forum/viewtopic.php?f=17&t=1428&p=6115
@@ -115,10 +117,10 @@ RUN git clone https://github.com/djoole/couchpotato.provider.t411 /home/box/couc
 
 # HeadPhones
 RUN mkdir -p /home/box/headphones
-ADD headphones/* /home/box/headphones/
+ADD headphones/ /home/box/headphones/
 
 # deluge
-ADD deluge/* /home/box/deluge/
+ADD deluge/ /home/box/deluge/
 RUN mkdir -p /home/box/deluge/autoadd
 RUN mkdir -p /home/box/deluge/downloads
 RUN mkdir -p /home/box/deluge/tmp
@@ -126,7 +128,7 @@ RUN mkdir -p /home/box/deluge/torrents
 
 # nginx
 RUN mkdir -p /home/box/nginx
-ADD nginx/* /etc/nginx/sites-available/
+ADD nginx/ /etc/nginx/sites-available/
 RUN rm /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/stealthbox /etc/nginx/sites-enabled/stealthbox
 
@@ -141,7 +143,7 @@ RUN ln -s /opt/stealthbox/boxpasswd.sh /usr/bin/boxpasswd
 RUN pip install https://github.com/joh/when-changed/archive/master.zip
 
 # Add my_init
-ADD my_init.d/* /etc/my_init.d/
+ADD my_init.d/ /etc/my_init.d/
 
 # Add services
 ADD services/ /etc/service/
